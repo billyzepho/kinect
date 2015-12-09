@@ -29,6 +29,7 @@ vector < PointCloud<PointXYZ>::Ptr, Eigen::aligned_allocator <PointCloud <PointX
 		filename2 = st+ st1 + ss.str() +ext;
 		PointCloud<PointXYZ>::Ptr sourceCloud(new PointCloud<PointXYZ>);
       	io::loadPCDFile (filename2, *sourceCloud );	
+//neww
          //  sourceClouds.push_back(sourceCloud);
 
 				}	
