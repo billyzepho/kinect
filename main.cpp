@@ -12,6 +12,7 @@ using namespace pcl;
 
 int main (int argc, char** argv)
 {
+
     string st = "clouds912/";
     string st1 = "cloud";
     string ext = ".pcd";
@@ -44,11 +45,12 @@ pcl::PassThrough<pcl::PointXYZ> pass;
 	}
 */
      std::vector<int> indices;
-for (int i=0; i < sourceClouds.size() -1 ; i++) //change to filter
+	for (int i=0; i < sourceClouds.size() -1 ; i++) //change to filter
 	{
  
       pcl::removeNaNFromPointCloud(*sourceClouds[i],*sourceClouds[i], indices);
 	}
+
     pcl::IterativeClosestPoint<pcl::PointXYZ, pcl::PointXYZ> icp;
 	for (int i=0; i < sourceClouds.size() -1 ; i++)
 	{
@@ -57,10 +59,16 @@ for (int i=0; i < sourceClouds.size() -1 ; i++) //change to filter
 	pcl::PointCloud<pcl::PointXYZ> Final;
     icp.align(Final);
 	cout << "Transform : "<< i << " and " << i+1 << endl << icp.getFinalTransformation()<< endl;
-	}
 
-    
 
+	std::ostringstream ss;
+	ss << "trans" << i << ".txt";
+	string filename = ss.str();
+	ofstream myfile;
+	myfile.open (filename.c_str(), std::ofstream::out | std::ofstream::app);
+	myfile << icp.getFinalTransformation();
+	myfile.close();
+    }
 /* 
    icp.setInputSource(outputcloud1);
     icp.setInputTarget(outputcloud2);
