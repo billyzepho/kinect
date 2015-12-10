@@ -1,11 +1,12 @@
 #include <iostream>
 #include <string>
 #include <sstream>
+#include <fstream>
 #include <pcl/io/pcd_io.h>
 #include <pcl/point_types.h>
 #include <pcl/registration/icp.h>
 #include <pcl/filters/passthrough.h>
-
+#include <pcl/filters/filter.h>
 using namespace std; 
 using namespace pcl;
 
@@ -15,42 +16,53 @@ int main (int argc, char** argv)
     string st1 = "cloud";
     string ext = ".pcd";
     string filename;
-    string filename2;
 
 vector < PointCloud<PointXYZ>::Ptr, Eigen::aligned_allocator <PointCloud <PointXYZ>::Ptr > > sourceClouds;
 
-	for (int i=2; i<35 ; i++)
+	for (int i=2; i<34 ; i++)
 	{
-		if(i!=31){
 
  	    stringstream ss;
 		ss << i;
 
-		filename2 = st+ st1 + ss.str() +ext;
+		filename = st+ st1 + ss.str() +ext;
 		PointCloud<PointXYZ>::Ptr sourceCloud(new PointCloud<PointXYZ>);
-      	io::loadPCDFile (filename2, *sourceCloud );	
-//neww
-         //  sourceClouds.push_back(sourceCloud);
+      	io::loadPCDFile (filename, *sourceCloud );	
+		sourceClouds.push_back(sourceCloud);
 
-				}	
+					
+	}
+/*
+vector < PointCloud<PointXYZ>::Ptr, Eigen::aligned_allocator <PointCloud <PointXYZ>::Ptr > > filteredClouds;
+pcl::PassThrough<pcl::PointXYZ> pass;	
+	for (int i=0; i < sourceClouds.size() -1 ; i++)
+	{
+			PointCloud<PointXYZ>::Ptr filteredCloud(new PointCloud<PointXYZ>);
+			pass.setInputCloud(sourceClouds[i]);
+			pass.filter(*filteredCloud);
+			filteredClouds.push_back(filteredCloud);
+	}
+*/
+     std::vector<int> indices;
+for (int i=0; i < sourceClouds.size() -1 ; i++) //change to filter
+	{
+ 
+      pcl::removeNaNFromPointCloud(*sourceClouds[i],*sourceClouds[i], indices);
+	}
+    pcl::IterativeClosestPoint<pcl::PointXYZ, pcl::PointXYZ> icp;
+	for (int i=0; i < sourceClouds.size() -1 ; i++)
+	{
+	icp.setInputSource(sourceClouds[i]);
+    icp.setInputTarget(sourceClouds[i+1]);
+	pcl::PointCloud<pcl::PointXYZ> Final;
+    icp.align(Final);
+	cout << "Transform : "<< i << " and " << i+1 << endl << icp.getFinalTransformation()<< endl;
 	}
 
-/*   pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloud1 (new pcl::PointCloud<pcl::PointXYZRGB>);
-    pcl::io::loadPCDFile ("clouds912/cloud2.pcd", *cloud1);
-
-    pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloud2 (new pcl::PointCloud<pcl::PointXYZRGB>);
-    pcl::io::loadPCDFile ("clouds912/cloud3.pcd", *cloud2);
-
-pcl::PointCloud<pcl::PointXYZRGB>::Ptr outputcloud1 (new pcl::PointCloud<pcl::PointXYZRGB>);
-pcl::PointCloud<pcl::PointXYZRGB>::Ptr outputcloud2 (new pcl::PointCloud<pcl::PointXYZRGB>);
-pcl::PassThrough<pcl::PointXYZRGB> pass; // can do this without parameters
-pass.setInputCloud(cloud1);
-pass.filter(*outputcloud1);
-pass.setInputCloud(cloud2);
-pass.filter(*outputcloud2);
     
-    pcl::IterativeClosestPoint<pcl::PointXYZRGB, pcl::PointXYZRGB> icp;
-    icp.setInputSource(outputcloud1);
+
+/* 
+   icp.setInputSource(outputcloud1);
     icp.setInputTarget(outputcloud2);
     pcl::PointCloud<pcl::PointXYZRGB> Final;
     icp.align(Final);

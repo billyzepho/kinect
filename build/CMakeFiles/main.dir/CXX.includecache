@@ -21,6 +21,8 @@ pcl/registration/icp.h
 -
 pcl/filters/passthrough.h
 -
+pcl/filters/filter.h
+-
 
 /usr/include/eigen3/Eigen/Cholesky
 Core
