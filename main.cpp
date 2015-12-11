@@ -20,7 +20,7 @@ int main (int argc, char** argv)
 
 vector < PointCloud<PointXYZ>::Ptr, Eigen::aligned_allocator <PointCloud <PointXYZ>::Ptr > > sourceClouds;
 
-	for (int i=2; i<34 ; i++)
+	for (int i=2; i<7 ; i++)
 	{
 
  	    stringstream ss;
@@ -58,11 +58,11 @@ pcl::PassThrough<pcl::PointXYZ> pass;
     icp.setInputTarget(sourceClouds[i+1]);
 	pcl::PointCloud<pcl::PointXYZ> Final;
     icp.align(Final);
-	cout << "Transform : "<< i << " and " << i+1 << endl << icp.getFinalTransformation()<< endl;
-
+	//cout << "Transform : "<< i << " and " << i+1 << endl << icp.getFinalTransformation()<< endl;
+	Eigen::Matrix4f transformation = icp.getFinalTransformation ();
 
 	std::ostringstream ss;
-	ss << "trans" << i << ".txt";
+	ss << "cloud" << i+3 << ".txt";
 	string filename = ss.str();
 	ofstream myfile;
 	myfile.open (filename.c_str(), std::ofstream::out | std::ofstream::app);
