@@ -20,7 +20,7 @@ int main (int argc, char** argv)
 
 vector < PointCloud<PointXYZ>::Ptr, Eigen::aligned_allocator <PointCloud <PointXYZ>::Ptr > > sourceClouds;
 
-	for (int i=2; i<7 ; i++)
+	for (int i=2; i<34 ; i++)
 	{
 
  	    stringstream ss;
@@ -52,6 +52,9 @@ pcl::PassThrough<pcl::PointXYZ> pass;
 	}
 
     pcl::IterativeClosestPoint<pcl::PointXYZ, pcl::PointXYZ> icp;
+	Eigen::Matrix4f temp = Eigen::Matrix4f::Identity();
+	Eigen::Matrix4f transformation = Eigen::Matrix4f::Identity();
+	
 	for (int i=0; i < sourceClouds.size() -1 ; i++)
 	{
 	icp.setInputSource(sourceClouds[i]);
@@ -59,14 +62,14 @@ pcl::PassThrough<pcl::PointXYZ> pass;
 	pcl::PointCloud<pcl::PointXYZ> Final;
     icp.align(Final);
 	//cout << "Transform : "<< i << " and " << i+1 << endl << icp.getFinalTransformation()<< endl;
-	Eigen::Matrix4f transformation = icp.getFinalTransformation ();
-
+	transformation = temp * icp.getFinalTransformation ();
+	temp = transformation;
 	std::ostringstream ss;
 	ss << "cloud" << i+3 << ".txt";
 	string filename = ss.str();
 	ofstream myfile;
 	myfile.open (filename.c_str(), std::ofstream::out | std::ofstream::app);
-	myfile << icp.getFinalTransformation();
+	myfile << transformation;
 	myfile.close();
     }
 /* 
