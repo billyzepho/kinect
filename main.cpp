@@ -13,7 +13,7 @@ using namespace pcl;
 int main (int argc, char** argv)
 {
 
-    string st = "clouds912/";
+    string st = "clouds1212/";
     string st1 = "cloud";
     string ext = ".pcd";
     string filename;
