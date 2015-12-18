@@ -7,20 +7,25 @@
 #include <pcl/registration/icp.h>
 #include <pcl/filters/passthrough.h>
 #include <pcl/filters/filter.h>
+#include <pcl/filters/bilateral.h>
+#include <iterator>
+#include <boost/filesystem.hpp>
+#include <boost/iterator/filter_iterator.hpp>
+namespace fs = boost::filesystem;
 using namespace std; 
 using namespace pcl;
 
 int main (int argc, char** argv)
 {
 
-    string st = "clouds1212/";
+    string st = "clouds1512/";
     string st1 = "cloud";
     string ext = ".pcd";
     string filename;
 
 vector < PointCloud<PointXYZ>::Ptr, Eigen::aligned_allocator <PointCloud <PointXYZ>::Ptr > > sourceClouds;
 
-	for (int i=2; i<34 ; i++)
+	for (int i=1; i<251 ; i++)
 	{
 
  	    stringstream ss;
@@ -33,17 +38,8 @@ vector < PointCloud<PointXYZ>::Ptr, Eigen::aligned_allocator <PointCloud <PointX
 
 					
 	}
-/*
-vector < PointCloud<PointXYZ>::Ptr, Eigen::aligned_allocator <PointCloud <PointXYZ>::Ptr > > filteredClouds;
-pcl::PassThrough<pcl::PointXYZ> pass;	
-	for (int i=0; i < sourceClouds.size() -1 ; i++)
-	{
-			PointCloud<PointXYZ>::Ptr filteredCloud(new PointCloud<PointXYZ>);
-			pass.setInputCloud(sourceClouds[i]);
-			pass.filter(*filteredCloud);
-			filteredClouds.push_back(filteredCloud);
-	}
-*/
+
+
      std::vector<int> indices;
 	for (int i=0; i < sourceClouds.size() -1 ; i++) //change to filter
 	{
@@ -65,25 +61,22 @@ pcl::PassThrough<pcl::PointXYZ> pass;
 	transformation = temp * icp.getFinalTransformation ();
 	temp = transformation;
 	std::ostringstream ss;
-	ss << "cloud" << i+3 << ".txt";
+	ss << "cloud" << i+2 << ".txt";
 	string filename = ss.str();
 	ofstream myfile;
 	myfile.open (filename.c_str(), std::ofstream::out | std::ofstream::app);
 	myfile << transformation;
 	myfile.close();
     }
-/* 
-   icp.setInputSource(outputcloud1);
-    icp.setInputTarget(outputcloud2);
-    pcl::PointCloud<pcl::PointXYZRGB> Final;
-    icp.align(Final);
-    std::cout << "has converged:" << icp.hasConverged() << " score: " <<
-    icp.getFitnessScore() << std::endl;
-    std::cout << icp.getFinalTransformation() << std::endl;
 
-	//pcl::io::savePCDFileASCII ("filtered2.pcd", *outputcloud2);
-        //pcl::io::savePCDFileASCII ("final.pcd", Final);
+	std::ostringstream sl;
+	sl << "cloud" << 1 << ".txt";
+	string filenamel = sl.str();
+	ofstream myfilel;
+	myfilel.open (filenamel.c_str(), std::ofstream::out | std::ofstream::app);
+	myfilel << Eigen::Matrix4f::Identity();
+	myfilel.close();
 
-*/
+
     return 0;
 }
