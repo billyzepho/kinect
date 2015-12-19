@@ -1,0 +1,8 @@
+cmake_minimum_required(VERSION 2.6 FATAL_ERROR)
+project(save_clouds)
+find_package(PCL REQUIRED COMPONENTS common io visualization)
+include_directories(${PCL_INCLUDE_DIRS})
+link_directories(${PCL_LIBRARY_DIRS})
+add_definitions(${PCL_DEFINITIONS})
+add_executable(save save.cpp)
+target_link_libraries (save ${PCL_LIBRARIES})
