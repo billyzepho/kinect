@@ -10,8 +10,8 @@
 
 using namespace std; 
 
-const string OUT_DIR = "/home/billy/Desktop/Code/project/_newclouds"; 
-unsigned int microseconds =1000000;
+const string OUT_DIR = "/home/billy/Desktop/Code/project/_newclouds/"; 
+unsigned int microseconds =100000;
 class SimpleOpenNIViewer 
 { 
 public: 
@@ -32,7 +32,7 @@ public:
 								out.width(3);
                                 out << std::setfill('0') << frames_saved; 
                                 std::string name = OUT_DIR + "cloud" + out.str() + ".pcd"; 
-                                pcl::io::savePCDFileASCII( name, *cloud ); 
+                                pcl::io::savePCDFileBinaryCompressed( name, *cloud ); 
 								//cloud push maybe ??
                         } 
                 } 

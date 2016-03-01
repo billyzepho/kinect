@@ -18,24 +18,27 @@ using namespace pcl;
 int main (int argc, char** argv)
 {
 
-    string st = "clouds1512/";
+    string st = "FIRST/";
     string st1 = "cloud";
     string ext = ".pcd";
     string filename;
 
 vector < PointCloud<PointXYZ>::Ptr, Eigen::aligned_allocator <PointCloud <PointXYZ>::Ptr > > sourceClouds;
 
-	for (int i=1; i<251 ; i++)
+	for (int i=1; i<12 ; i++)
 	{
 
  	    stringstream ss;
-		ss << i;
-
+		ss.width(3);
+		ss << std::setfill('0') << i;
+		//cout << ss.str() <<endl;
 		filename = st+ st1 + ss.str() +ext;
 		PointCloud<PointXYZ>::Ptr sourceCloud(new PointCloud<PointXYZ>);
-      	io::loadPCDFile (filename, *sourceCloud );	
+      	//if (io::loadPCDFile (filename, *sourceCloud ) != -1)
+		//{	
+		io::loadPCDFile (filename, *sourceCloud );
 		sourceClouds.push_back(sourceCloud);
-
+		//}
 					
 	}
 
@@ -60,17 +63,20 @@ vector < PointCloud<PointXYZ>::Ptr, Eigen::aligned_allocator <PointCloud <PointX
 	//cout << "Transform : "<< i << " and " << i+1 << endl << icp.getFinalTransformation()<< endl;
 	transformation = temp * icp.getFinalTransformation ();
 	temp = transformation;
-	std::ostringstream ss;
-	ss << "cloud" << i+2 << ".txt";
-	string filename = ss.str();
+	std::ostringstream ss2;
+	ss2.width(3);
+	ss2 << 	std::setfill('0') << i+2;
+	//ss2 << "cloud" << i+2 << ".txt";
+	string filename = "cloud" + ss2.str() +".txt";
 	ofstream myfile;
 	myfile.open (filename.c_str(), std::ofstream::out | std::ofstream::app);
 	myfile << transformation;
 	myfile.close();
     }
 
+
 	std::ostringstream sl;
-	sl << "cloud" << 1 << ".txt";
+	sl << "cloud001.txt";
 	string filenamel = sl.str();
 	ofstream myfilel;
 	myfilel.open (filenamel.c_str(), std::ofstream::out | std::ofstream::app);
